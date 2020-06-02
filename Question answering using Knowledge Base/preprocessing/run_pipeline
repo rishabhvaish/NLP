@@ -1,0 +1,42 @@
+
+#!/bin/bash -e
+
+mkdir -p scratch
+mkdir -p downloads
+
+# Download ComplexWebQ
+# move it to downloads/
+# ln -s downloads/complexwebquestions_V1_1/ComplexWebQuestions_train.json complexwebq_train
+mklink /h complexwebq_train downloads\complexwebquestions_V1_1\ComplexWebQuestions_train.json
+# ln -s downloads/complexwebquestions_V1_1/ComplexWebQuestions_test.json complexwebq_test
+# mklink /h complexwebq_test downloads\complexwebquestions_V1_1\ComplexWebQuestions_test.json
+# ln -s downloads/complexwebquestions_V1_1/ComplexWebQuestions_dev.json complexwebq_dev
+mklink /h complexwebq_dev downloads\complexwebquestions_V1_1\ComplexWebQuestions_dev.json
+
+## Glove embeddings
+#wget -nd http://nlp.stanford.edu/data/glove.840B.300d.zip
+#unzip glove.840B.300d.zip -d downloads/
+#rm -f glove.840B.300d.zip
+#ln -s downloads/glove.840B.300d.txt glove
+mklink /h glove downloads\glove.840B.300d.txt
+
+# Entity links from S-MART
+#ln -s downloads/complexwebq.examples.train.e2e.top10.filter.tsv train_links_raw
+#mklink /h train_links_raw downloads\webquestions.examples.train.e2e.top10.filter.tsv.txt
+#ln -s downloads/complexwebq.examples.test.e2e.top10.filter.tsv test_links_raw
+#mklink /h test_links_raw downloads\webquestions.examples.test.e2e.top10.filter.tsv.txt
+
+# Preprocessed Freebase data
+#wget -nd http://curtis.ml.cmu.edu/datasets/graftnet/freebase_prepro.tgz
+#tar -xvf freebase_prepro.tgz
+
+# Run
+# Preprocess WebQSP data
+python step0_preprocess_complexwebq.py
+# Preprocess entity linking data
+python step1_process_entity_links.py
+## Extract relation and question embeddings for weighted PPR
+python step2_relation_embeddings.py
+#python step3_question_embeddings.py
+## Run PPR to get subgraphs
+#python step4_extract_subgraphs.py
